@@ -1,9 +1,13 @@
-
 from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
+from dotenv import load_dotenv
+from fastapi.responses import FileResponse
 import boto3
 import os
 import json
+
+# Load credentials from .env
+load_dotenv()
 
 app = FastAPI()
 
@@ -24,6 +28,10 @@ class StatsUpload(BaseModel):
     user_id: str
     stats: dict
 
+@app.get("/")
+def root():
+    return {"message": "NovaPrime backend is live."}
+
 @app.post("/upload_stats")
 async def upload_stats(data: StatsUpload):
     try:
@@ -33,3 +41,11 @@ async def upload_stats(data: StatsUpload):
         return {"status": "success", "message": "Stats uploaded."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/openapi.yaml")
+async def serve_openapi():
+    openapi_path = os.path.join(os.path.dirname(__file__), "openapi.yaml")
+    if os.path.exists(openapi_path):
+        return FileResponse(openapi_path, media_type="text/yaml")
+    else:
+        raise HTTPException(status_code=404, detail="openapi.yaml not found.")
