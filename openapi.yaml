@@ -2,7 +2,41 @@ openapi: 3.0.0
 info:
   title: NovaPrime Wasabi API
   version: 1.0.0
+servers:
+  - url: https://novaprime-backend.onrender.com
+
 paths:
+  /upload_stats:
+    post:
+      summary: Upload user stat data to Wasabi
+      operationId: upload_stats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                stats:
+                  type: object
+              required:
+                - user_id
+                - stats
+      responses:
+        '200':
+          description: Stats uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
   /get_user_stats:
     post:
       summary: Retrieve a user's stats from Wasabi
@@ -20,8 +54,52 @@ paths:
                 - user_id
       responses:
         '200':
-          description: Stats successfully retrieved
+          description: Stats retrieved successfully
           content:
             application/json:
               schema:
                 type: object
+                properties:
+                  user_id:
+                    type: string
+                  stats:
+                    type: object
+
+  /list_all_user_ids:
+    get:
+      summary: Get a list of all saved user IDs
+      operationId: list_all_user_ids
+      responses:
+        '200':
+          description: List of user IDs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_ids:
+                    type: array
+                    items:
+                      type: string
+
+  /get_all_user_stats:
+    get:
+      summary: Retrieve all user stat files (admin/leaderboard use)
+      operationId: get_all_user_stats
+      responses:
+        '200':
+          description: All user stats retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user_id:
+                          type: string
+                        stats:
+                          type: object
