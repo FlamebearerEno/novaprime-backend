@@ -1,11 +1,13 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import boto3
+import botocore
 import os
 import json
 
+# Load environment variables
 load_dotenv()
 
 app = FastAPI()
@@ -16,13 +18,16 @@ WASABI_SECRET_KEY = os.getenv("WASABI_SECRET_KEY")
 WASABI_ENDPOINT = "https://s3.ca-central-1.wasabisys.com"
 BUCKET_NAME = "chet-stats"
 
+# Force Signature Version 4 (avoids signature mismatch)
 s3_client = boto3.client(
     's3',
     endpoint_url=WASABI_ENDPOINT,
     aws_access_key_id=WASABI_ACCESS_KEY,
-    aws_secret_access_key=WASABI_SECRET_KEY
+    aws_secret_access_key=WASABI_SECRET_KEY,
+    config=botocore.client.Config(signature_version='s3v4')
 )
 
+# Data Models
 class StatsUpload(BaseModel):
     user_id: str
     stats: dict
@@ -30,6 +35,7 @@ class StatsUpload(BaseModel):
 class UserIDRequest(BaseModel):
     user_id: str
 
+# Routes
 @app.get("/")
 def root():
     return {"message": "NovaPrime backend is live."}
