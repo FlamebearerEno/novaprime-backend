@@ -1,0 +1,27 @@
+openapi: 3.0.0
+info:
+  title: NovaPrime Wasabi API
+  version: 1.0.0
+paths:
+  /get_user_stats:
+    post:
+      summary: Retrieve a user's stats from Wasabi
+      operationId: get_user_stats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+              required:
+                - user_id
+      responses:
+        '200':
+          description: Stats successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
