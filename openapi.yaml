@@ -2,14 +2,26 @@ openapi: 3.0.0
 info:
   title: NovaPrime Wasabi API
   version: 1.0.0
-servers:
-  - url: https://novaprime-backend.onrender.com
-
 paths:
+  /:
+    get:
+      summary: Root health check
+      operationId: root
+      responses:
+        "200":
+          description: Server is live
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
   /upload_stats:
     post:
-      summary: Upload user stat data to Wasabi
-      operationId: upload_stats
+      summary: Upload user stats to Wasabi
+      operationId: uploadStats
       requestBody:
         required: true
         content:
@@ -25,8 +37,8 @@ paths:
                 - user_id
                 - stats
       responses:
-        '200':
-          description: Stats uploaded successfully
+        "200":
+          description: Stats successfully uploaded
           content:
             application/json:
               schema:
@@ -40,7 +52,7 @@ paths:
   /get_user_stats:
     post:
       summary: Retrieve a user's stats from Wasabi
-      operationId: get_user_stats
+      operationId: getUserStats
       requestBody:
         required: true
         content:
@@ -53,53 +65,45 @@ paths:
               required:
                 - user_id
       responses:
-        '200':
-          description: Stats retrieved successfully
+        "200":
+          description: Stats successfully retrieved
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  user_id:
-                    type: string
-                  stats:
-                    type: object
 
   /list_all_user_ids:
     get:
-      summary: Get a list of all saved user IDs
-      operationId: list_all_user_ids
+      summary: List all user IDs from Wasabi
+      operationId: listAllUserIds
       responses:
-        '200':
+        "200":
           description: List of user IDs
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  user_ids:
-                    type: array
-                    items:
-                      type: string
 
   /get_all_user_stats:
     get:
-      summary: Retrieve all user stat files (admin/leaderboard use)
-      operationId: get_all_user_stats
+      summary: Retrieve all user stats from Wasabi
+      operationId: getAllUserStats
       responses:
-        '200':
-          description: All user stats retrieved
+        "200":
+          description: All user stats returned
           content:
             application/json:
               schema:
                 type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        user_id:
-                          type: string
-                        stats:
-                          type: object
+
+  /openapi.yaml:
+    get:
+      summary: Serve OpenAPI specification
+      operationId: serveOpenapi
+      responses:
+        "200":
+          description: OpenAPI spec file
+          content:
+            text/yaml:
+              schema:
+                type: string
