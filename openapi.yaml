@@ -2,6 +2,10 @@ openapi: 3.0.0
 info:
   title: NovaPrime Wasabi API
   version: 1.0.0
+
+servers:
+  - url: https://novaprime-backend.onrender.com
+
 paths:
   /:
     get:
